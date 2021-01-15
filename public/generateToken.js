@@ -7,7 +7,9 @@ function generateToken(user) {
         email: user.email,
         _id: user._id
     }
+    console.log(u)
     return token = jwt.sign(u, "Pravate",{
+        expiresIn: 60
     })
 }
 

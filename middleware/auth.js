@@ -5,17 +5,16 @@ const jwt = require('jsonwebtoken')
 function auth(req, res, next) {
     let token = req.headers['authorization']
     if (!token) {
-        return next()
+        return res.send('где токен')
     }
-    token = token.replace('Bearer', '')
-    console.log(token)
+    token = token.replace('Bearer ', '')
 
     jwt.verify(token, "Pravate", function (err, decoded) {
-        console.log(decoded.foo)
+        console.log(decoded._id)
         if (err) {
             return res.status(401).json({
                 success: false,
-                message: "Зарегистрируйтесь пожалуйста, или выполните вход"u
+                message: "Зарегистрируйтесь пожалуйста, или выполните вход"
             })
         } else {
             next()
