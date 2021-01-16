@@ -1,4 +1,4 @@
 
 
 M.Modal(document.querySelectorAll('.modal'))
-M.Modal.close()
+M.Modal.open()
