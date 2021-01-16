@@ -9,7 +9,7 @@ function auth(req, res, next) {
     }
     token = token.replace('Bearer ', '')
 
-    jwt.verify(token, "Pravate", function (err, decoded) {
+    jwt.verify(token, key.JWT_SECRET, function (err, decoded) {
         console.log(decoded._id)
         if (err) {
             return res.status(401).json({
