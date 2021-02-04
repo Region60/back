@@ -10,11 +10,11 @@ function auth(req, res, next) {
     token = token.replace('Bearer ', '')
 
     jwt.verify(token, key.JWT_SECRET, function (err, decoded) {
-        console.log(decoded._id)
+        console.log(decoded)
         if (err) {
             return res.status(401).json({
                 success: false,
-                message: "Зарегистрируйтесь пожалуйста, или выполните вход"
+                message: "выполните вход"
             })
         } else {
             next()

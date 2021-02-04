@@ -34,7 +34,6 @@ router.post('/login', async (req, res) => {
             }
         })
         const token = generateToken(candidate)
-        console.log(req.headers)
         res.json({
             user: candidate,
             token
@@ -51,6 +50,7 @@ router.post('/logout', async (req, res) => {
 router.post('/loadImage', auth, upload.array('image_save', 30), async function (req, res, next) {
     try {
         await req.files.forEach((i) => {
+            console.log(i)
             const {originalname, path, filename,} = i
             const newImage = new Image({originalname, path, filename})
             newImage.save()
