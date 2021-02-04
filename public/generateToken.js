@@ -9,7 +9,7 @@ function generateToken(user) {
     }
     console.log(u)
     return token = jwt.sign(u, key.JWT_SECRET,{
-        expiresIn: 60*60
+        expiresIn: 60*60*60
     })
 }
 
