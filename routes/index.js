@@ -44,9 +44,6 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.post('/logout', async (req, res) => {
-})
-
 router.post('/loadImage', auth, upload.array('image_save', 30), async function (req, res, next) {
     try {
         await req.files.forEach((i) => {
@@ -55,8 +52,10 @@ router.post('/loadImage', auth, upload.array('image_save', 30), async function (
             const newImage = new Image({originalname, path, filename})
             newImage.save()
         })
-        res.redirect('/')
-
+        return res.status(201).json({
+            success: true,
+            message: "Файлы успешно добавлены"
+        })
     } catch (e) {
         console.log(e)
     }
@@ -72,8 +71,10 @@ router.delete('/deleteImage', auth, async (req, res) => {
             await Image.deleteOne({filename: item})
         }
         console.log('file deleted');
-        res.redirect('/')
-
+        return res.status(202).json({
+            success: true,
+            message: "Файлы успешно удалены"
+        })
 
     } catch (e) {
         console.log(e)
@@ -95,13 +96,13 @@ router.get('/getImage', async (req, res) => {
             if (err) {
                 console.log(err)
             }
-            res.send(result)
+            return res.status(200)
+                .send(result)
         })
     } catch (e) {
         console.log(e)
     }
 })
-
 
 router.post('/register', async (req, res,) => {
     try {
@@ -115,17 +116,6 @@ router.post('/register', async (req, res,) => {
             const user = new User({name, email, password: hashPassword})
 
             await user.save()
-            console.log(user)
-
-            /*await sgMail.send(regEmail(email))
-                .then(() => {
-                }, error => {
-                    console.error(error);
-
-                    if (error.response) {
-                        console.error(error.response.body)
-                    }
-                });*/
             console.log('Пользователь создан:')
             res.send('Пользователь создан')
         }
@@ -134,69 +124,6 @@ router.post('/register', async (req, res,) => {
     }
 })
 
-router.post('/reset', async (req, res) => {
-    try {
-        crypto.randomBytes(32, async (err, buffer) => {
-            if (err) {
-            }
-            const token = buffer.toString('hex')
-            const candidate = await User.findOne({email: req.body.email})
-            if (candidate) {
-                candidate.resetToken = token
-                candidate.resetTokenExp = Date.now() + 60 * 60 * 1000
-                await candidate.save()
-                /*await sgMail.send(resetEmail(candidate.email, token))*/
-            } else {
-                console.log('Такого email нет')
-                req.send('Такого email нет')
-            }
-        })
-    } catch (e) {
-        console.log(e)
-    }
-})
-
-router.get('/password/:token', async (req, res) => {
-    if (!req.params.token) {
-        return
-    }
-    try {
-        const user = await User.findOne({
-            resetToken: req.params.token,
-            resetTokenExp: {$gt: Date.now()}
-        })
-        if (!user) {
-            return
-        } else {
-            /*error: req.flash('error'),
-                userId: user._id.toString(), //передаем параметры userId, token
-                token: req.params.token*/
-        }
-
-    } catch (e) {
-        console.log(e)
-    }
-})
-
-router.post('/password', async (req, res) => {
-    try {
-        const user = await User.findOne({
-            _id: req.body.userId,
-            resetToken: req.body.token,
-            resetTokenExp: {$gt: Date.now()}
-        })
-        if (user) {
-            user.password = await bcrypt.hash(req.body.password, 10)
-            user.resetToken = undefined
-            user.resetTokenExp = undefined
-            await user.save()
-        } else {
-            console.log('Время жизни токена истекло')
-        }
-    } catch (e) {
-        console.log(e)
-    }
-})
 
 
 module.exports = router;

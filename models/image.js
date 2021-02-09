@@ -15,7 +15,6 @@ const image = new Schema({
         type: String,
         required: true
     }
-
 })
 
 image.plugin(mongoosePaginate)
