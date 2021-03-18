@@ -9,6 +9,8 @@ const User = require('../models/users')
 const Image = require('../models/image')
 const multer = require("multer")
 const upload = multer({dest: 'uploads/'})
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('../public/swagger.json')
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
@@ -34,7 +36,7 @@ router.post('/login', async (req, res) => {
             }
         })
         const token = generateToken(candidate)
-        res.json({
+        res.status(200).json({
             user: candidate,
             token
         })
@@ -58,6 +60,10 @@ router.post('/loadImage', auth, upload.array('image_save', 30), async function (
         })
     } catch (e) {
         console.log(e)
+        return res.status(404).json({
+            success: true,
+            message: "Ошибка загрузки файлов"
+        })
     }
 })
 
@@ -78,6 +84,10 @@ router.delete('/deleteImage', auth, async (req, res) => {
 
     } catch (e) {
         console.log(e)
+        return res.status(404).json({
+            success: true,
+            message: "Ошибка удаления файла(ов)"
+        })
     }
 
 })
@@ -123,6 +133,8 @@ router.post('/register', async (req, res,) => {
         console.log(e)
     }
 })
+
+router.get('/api-docs', swaggerUi.setup(swaggerDocument))
 
 
 
