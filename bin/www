@@ -10,7 +10,7 @@ let http = require('http');
 const mongoose = require('mongoose')
 const keys = require('../keys/index');
 
-async function start () {
+//async function start () {
   try {
 await  mongoose.connect("mongodb+srv://maksim:8u2upvDe0W1dp945@cluster0-mjkka.mongodb.net/backEndGallery", {
   useNewUrlParser:true,
